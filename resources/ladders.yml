@@ -1,0 +1,22 @@
+########################################################################################################################
+########################################################################################################################
+###################################                                                  ###################################
+###################################               =-=  quarkPERMS  =-=               ###################################
+###################################                    by iHells                     ###################################
+###################################                                                  ###################################
+########################################################################################################################
+########################################################################################################################
+#
+# This is the `ladders.yml` file and should contain the rank ladders you plan to use. A good use of these will be
+# for promoting staff members and possibly upgrading donor ranks. Each ladder should go from lowest-highest rank and
+# if you wish, can also include a command run by console with a few variables:
+#
+#   * {player} - The players name
+#   * {rank} - The rank name
+#
+# The command used will be /promote <ladder> <player>
+#
+# If you have any difficulty setting up the config here, please join the QUARK official discord: ta5CzNc
+
+staff: [Mod, Admin, Owner]
+donor: []

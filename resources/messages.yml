@@ -1,0 +1,17 @@
+########################################################################################################################
+########################################################################################################################
+###################################                                                  ###################################
+###################################               =-=  quarkPERMS  =-=               ###################################
+###################################                    by iHells                     ###################################
+###################################                                                  ###################################
+########################################################################################################################
+########################################################################################################################
+#
+# This is the `messages.yml` files and contains all the messages for the plugin that you can configure. Most of these
+# are just confirmation for commands. There are placeholders you can use if you wish, they are:
+#
+#   * {player} - The player who executed the command
+#   * {target} - The target mentioned in the command
+#   * {rank} - The rank mentioned in the command
+#
+# If you have any difficulty setting up the config here, please join the QUARK official discord: ta5CzNc
