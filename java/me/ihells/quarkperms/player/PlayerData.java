@@ -19,4 +19,8 @@ public class PlayerData {
     private List<Rank> ranks = new ArrayList<>();
     private List<String> permissions = new ArrayList<>();
 
+    public void reset() {
+        this.name = null; this.ranks = null; this.permissions = null; this.attachment = null;
+    }
+
 }

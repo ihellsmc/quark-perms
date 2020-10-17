@@ -16,4 +16,8 @@ public class Rank {
     private List<Rank> inheritance;
     private List<String> permissions;
 
+    public void reset() {
+        this.prefix = null; this.priority = -1; this.inheritance = null; this.permissions = null;
+    }
+
 }
