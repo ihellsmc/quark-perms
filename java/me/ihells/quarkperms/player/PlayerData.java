@@ -4,7 +4,6 @@ import lombok.Data;
 import me.ihells.quarkperms.rank.Rank;
 import org.bukkit.permissions.PermissionAttachment;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,8 +15,8 @@ public class PlayerData {
     private PermissionAttachment attachment;
     private String name;
 
-    private List<Rank> ranks = new ArrayList<>();
-    private List<String> permissions = new ArrayList<>();
+    private List<Rank> ranks;
+    private List<String> permissions;
 
     public void reset() {
         this.name = null; this.ranks = null; this.permissions = null; this.attachment = null;

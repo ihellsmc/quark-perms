@@ -25,6 +25,7 @@ public class API {
     public void setDefaultRank(Rank rank) { rankManager.setDefaultRank(rank); }
     public Rank getHighestRank() { return rankManager.getHighestRank(); }
 
+    public void setRank(Player player, Rank rank) { rankManager.setRank(player, rank); }
     public void setRanks(Player player, List<Rank> ranks) { rankManager.setRanks(player, ranks); }
     public void removeRank(Player player, Rank rank) { rankManager.removeRank(player, rank); }
     public void addRank(Player player, Rank rank) { rankManager.addRank(player, rank); }

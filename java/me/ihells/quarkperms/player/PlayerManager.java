@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.ihells.quarkperms.QuarkPerms;
 import me.ihells.quarkperms.rank.Rank;
 import me.ihells.quarkperms.rank.RankManager;
+import me.ihells.quarkperms.utils.CC;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -36,9 +37,11 @@ public class PlayerManager {
             // if they have ranks in the config
             if (playerDataFile.getStringList(player.getUniqueId().toString() + ".ranks") != null) {
                 // set rank they have
-                for (String rank : playerDataFile.getStringList(player.getUniqueId().toString() + ".ranks")) {
-                    if (rankManager.getRank(rank) != null) {
-                        ranks.add(rankManager.getRank(rank));
+                for (String rankName : playerDataFile.getStringList(player.getUniqueId().toString() + ".ranks")) {
+                    Rank rank = rankManager.getRank(rankName);
+                    if (rank != null) {
+                        ranks.add(rank);
+                        System.out.println(rank.getName());
                     }
                 }
             }
@@ -63,7 +66,9 @@ public class PlayerManager {
         // if they have data, get it, else create it
         if (getPlayerData(player) != null) {
             data = getPlayerData(player);
-        } else { data = new PlayerData(player.getUniqueId()); }
+        } else {
+            data = new PlayerData(player.getUniqueId());
+        }
 
         PermissionAttachment attachment = player.addAttachment(QuarkPerms.getInstance());
         data.setAttachment(attachment); // set perm attachment
@@ -71,14 +76,15 @@ public class PlayerManager {
         data.setRanks(ranks); // set ranks
         data.setPermissions(permissions); // set permissions
 
-        QuarkPerms.getInstance().getPermissionManager().initialSet(data);
+        playerData.add(data);
 
-        ranks.clear(); permissions.clear(); // clear for memory
+        QuarkPerms.getInstance().getPermissionManager().initialSet(data);
 
     }
 
     public void removePlayer(Player player) {
         PlayerData data = getPlayerData(player);
+        playerData.remove(data);
         if (data.getAttachment() != null) { player.removeAttachment(data.getAttachment()); }
         data.reset();
     }

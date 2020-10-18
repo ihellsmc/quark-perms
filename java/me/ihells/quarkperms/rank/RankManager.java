@@ -44,6 +44,7 @@ public class RankManager {
         }
 
         setInheritance();
+
     }
 
     private void setInheritance() {
@@ -59,7 +60,7 @@ public class RankManager {
     }
 
     public Rank getRank(String name) {
-        for (Rank rank : ranks) { if (rank.getName().equals(name)) return rank; }
+        for (Rank rank : ranks) { if (rank.getName().equalsIgnoreCase(name)) return rank; }
         return null;
     }
 
@@ -78,6 +79,12 @@ public class RankManager {
         List<String> rankNames = new ArrayList<>();
         for (Rank rank : ranks) { rankNames.add(rank.getName()); }
         playerData.set(player.getUniqueId().toString()+".ranks", rankNames);
+        QuarkPerms.getInstance().savePlayerData();
+        QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player);
+    }
+
+    public void setRank(Player player, Rank rank) {
+        playerData.set(player.getUniqueId().toString()+".ranks", Collections.singletonList(rank.getName()));
         QuarkPerms.getInstance().savePlayerData();
         QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player);
     }

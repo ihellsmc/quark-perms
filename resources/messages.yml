@@ -8,10 +8,34 @@
 ########################################################################################################################
 #
 # This is the `messages.yml` files and contains all the messages for the plugin that you can configure. Most of these
-# are just confirmation for commands. There are placeholders you can use if you wish, they are:
-#
-#   * {player} - The player who executed the command
-#   * {target} - The target mentioned in the command
-#   * {rank} - The rank mentioned in the command
+# are just confirmation for commands. There are placeholders you can use if you wish, they are listed down below in the
+# examples if you can use them.
 #
 # If you have any difficulty setting up the config here, please join the QUARK official discord: ta5CzNc
+
+chat-format:
+  Owner: "{prefix} &c{player}&7: &f{message}"
+  Admin: "{prefix} &c{player}&7: &f{message}"
+  Mod: "{prefix} &a{player}&7: &f{message}"
+  Member: "{prefix} &7{player}: {message}"
+  default: "&7{player}: {message}"
+
+no-permission: "&8[&b&lq&f&lP&8] &cError: You do not have permission to do this!"
+invalid-usage: "&8[&b&lq&f&lP&8] &cError: Invalid usage!"
+invalid-player: "&8[&b&lq&f&lP&8] &cError: Player '{target}' was not found!"
+invalid-rank: "&8[&b&lq&f&lP&8] &cError: Rank '{rank}' was not found!"
+
+on-rank-change: "&8[&b&lq&f&lP&8] &aSuccessfully set {target} to rank {rank}!"
+on-rank-add: "&8[&b&lq&f&lP&8] &Successfully gave {target} the rank {rank}!"
+on-rank-remove: "&8[&b&lq&f&lP&8] &Successfully removed the rank {rank} from {target}!"
+
+player-permission-add: "&8[&b&lq&f&lP&8] &aSuccessfully gave {target} permission '{permission}'!"
+player-permission-remove: "&8[&b&lq&f&lP&8] &aSuccessfully removed the permission '{permission}' from {target}!"
+rank-permission-add: "&8[&b&lq&f&lP&8] &aSuccessfully gave {rank} permission '{permission}'!"
+rank-permission-remove: "&8[&b&lq&f&lP&8] &aSuccessfully removed the permission '{permission}' from {rank}!"
+
+on-set-default-rank: "&8[&b&lq&f&lP&8] &aSuccessfully set the default rank to {rank}!"
+on-set-rank-prefix: "&8[&b&lq&f&lP&8] &aSuccessfully set the prefix for {rank} to '{prefix}'!"
+
+on-inherit-add: "&8[&b&lq&f&lP&8] &aSuccessfully added inherit {inherit} to {rank}!"
+on-inherit-remove: "&8[&b&lq&f&lP&8] &aSuccessfully removed inherit {inherit} to {rank}!"

@@ -3,6 +3,8 @@ package me.ihells.quarkperms;
 import com.qrakn.phoenix.lang.file.type.BasicConfigurationFile;
 import lombok.Getter;
 import lombok.Setter;
+import me.ihells.quarkperms.commands.SetRankCommand;
+import me.ihells.quarkperms.listeners.ChatListener;
 import me.ihells.quarkperms.listeners.JoinListener;
 import me.ihells.quarkperms.listeners.QuitListener;
 import me.ihells.quarkperms.permission.PermissionManager;
@@ -10,6 +12,7 @@ import me.ihells.quarkperms.player.PlayerManager;
 import me.ihells.quarkperms.rank.Rank;
 import me.ihells.quarkperms.rank.RankManager;
 import me.ihells.quarkperms.utils.API;
+import me.ihells.quarkperms.utils.framework.CommandFramework;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
@@ -30,12 +33,16 @@ public class QuarkPerms extends JavaPlugin {
     @Getter @Setter private BasicConfigurationFile ladders;
     @Getter @Setter private BasicConfigurationFile messages;
 
+    private CommandFramework framework;
+
     @Override
     public void onEnable() {
         instance = this; api = new API().getInstance();
+        framework = new CommandFramework(this);
         registerConfigs();
         registerManagers();
         registerListeners();
+        registerCommands();
     }
 
     @Override
@@ -56,9 +63,14 @@ public class QuarkPerms extends JavaPlugin {
         permissionManager = new PermissionManager();
     }
 
+    protected void registerCommands() {
+        new SetRankCommand(framework);
+    }
+
     protected void registerListeners() {
         Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new QuitListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
     }
 
     protected void saveConfigs() {
