@@ -3,7 +3,8 @@ package me.ihells.quarkperms;
 import com.qrakn.phoenix.lang.file.type.BasicConfigurationFile;
 import lombok.Getter;
 import lombok.Setter;
-import me.ihells.quarkperms.commands.SetRankCommand;
+import me.ihells.quarkperms.commands.InfoCommands;
+import me.ihells.quarkperms.commands.SetRankCommands;
 import me.ihells.quarkperms.listeners.ChatListener;
 import me.ihells.quarkperms.listeners.JoinListener;
 import me.ihells.quarkperms.listeners.QuitListener;
@@ -64,7 +65,8 @@ public class QuarkPerms extends JavaPlugin {
     }
 
     protected void registerCommands() {
-        new SetRankCommand(framework);
+        new SetRankCommands(framework);
+        new InfoCommands(framework);
     }
 
     protected void registerListeners() {

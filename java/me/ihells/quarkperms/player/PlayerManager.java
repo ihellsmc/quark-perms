@@ -70,6 +70,8 @@ public class PlayerManager {
             data = new PlayerData(player.getUniqueId());
         }
 
+        if (ranks.isEmpty()) { ranks.add(rankManager.getDefaultRank()); }
+
         PermissionAttachment attachment = player.addAttachment(QuarkPerms.getInstance());
         data.setAttachment(attachment); // set perm attachment
         data.setName(player.getName()); // set name

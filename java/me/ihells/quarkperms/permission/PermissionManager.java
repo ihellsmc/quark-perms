@@ -4,72 +4,33 @@ import me.ihells.quarkperms.QuarkPerms;
 import me.ihells.quarkperms.player.PlayerData;
 import me.ihells.quarkperms.rank.Rank;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class PermissionManager {
 
     private final YamlConfiguration playerData = QuarkPerms.getInstance().getPlayerData().getConfiguration();
 
-    public void givePerm(String perm, Player player) {
-        PlayerData data = QuarkPerms.getInstance().getPlayerManager().getPlayerData(player);
-        List<String> current;
+    public void givePerms(UUID uuid, String... perms) {
 
-        if (playerData.getStringList(player.getUniqueId().toString()+".permissions") != null) {
-            current = playerData.getStringList(player.getUniqueId().toString() + ".permissions");
-        } else {
-            current = new ArrayList<>();
-        }
-        if (!current.contains(perm)) { current.add(perm); }
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player == null) return;
 
-        playerData.set(player.getUniqueId().toString()+".permissions", current);
-
-        attachPerms(Collections.singletonList(perm), data);
-    }
-
-    public void givePerms(List<String> perms, Player player) {
-        PlayerData data = QuarkPerms.getInstance().getPlayerManager().getPlayerData(player);
-        List<String> current;
-
-        if (playerData.getStringList(player.getUniqueId().toString()+".permissions") != null) {
-            current = playerData.getStringList(player.getUniqueId().toString() + ".permissions");
-        } else {
-            current = new ArrayList<>();
+        List<String> current = new ArrayList<>();
+        if (playerData.getStringList(uuid.toString() + ".permissions") != null) {
+            current = playerData.getStringList(uuid.toString() + ".permissions");
         }
 
         for (String perm : perms) {
-            if (!current.contains(perm)) { current.add(perm); }
+            if (!current.contains(perm)) current.add(perm);
         }
 
-        playerData.set(player.getUniqueId().toString()+".permissions", current);
+        setPerms(player, current.toArray(new String[0]));
 
-        attachPerms(perms, data);
-    }
-
-    public void givePerms(String[] perms, Player player) {
-        PlayerData data = QuarkPerms.getInstance().getPlayerManager().getPlayerData(player);
-        List<String> current;
-
-        if (playerData.getStringList(player.getUniqueId().toString()+".permissions") != null) {
-            current = playerData.getStringList(player.getUniqueId().toString() + ".permissions");
-        } else {
-            current = new ArrayList<>();
-        }
-
-        for (String perm : perms) {
-            if (!current.contains(perm)) { current.add(perm); }
-        }
-
-        playerData.set(player.getUniqueId().toString()+".permissions", current);
-
-        attachPerms(Arrays.asList(perms), data);
     }
 
     private void attachPerms(List<String> perms, PlayerData player) {
@@ -96,42 +57,30 @@ public class PermissionManager {
         for (Rank inherit : rank.getInheritance()) { addRankPerms(inherit, player); }
     }
 
-    public void removePerm(String perm, Player player) {
-        if (playerData.getStringList(player.getUniqueId().toString()+".permissions") != null) {
-            List<String> perms = playerData.getStringList(player.getUniqueId().toString() + ".permissions");
-            perms.remove(perm);
-            setPerms(perms, player);
+    public void removePerms(UUID uuid, String... perms) {
+
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player == null) return;
+
+        List<String> current = new ArrayList<>();
+        if (playerData.getStringList(uuid.toString() + ".permissions") != null) {
+            current = playerData.getStringList(uuid.toString() + ".permissions");
         }
+
+        for (String perm : perms) { current.remove(perm); }
+
+        setPerms(player.getPlayer(), current.toArray(new String[0]));
+
     }
 
-    public void removePerms(List<String> perms, Player player) {
-        if (playerData.getStringList(player.getUniqueId().toString()+".permissions") != null) {
-            List<String> current = playerData.getStringList(player.getUniqueId().toString() + ".permissions");
-            for (String perm : perms) {
-                current.remove(perm);
-            }
-            setPerms(current, player);
-        }
-    }
-
-    public void removePerms(String[] perms, Player player) {
-        if (playerData.getStringList(player.getUniqueId().toString()+".permissions") != null) {
-            List<String> current = playerData.getStringList(player.getUniqueId().toString() + ".permissions");
-            for (String perm : perms) {
-                current.remove(perm);
-            }
-            setPerms(current, player);
-        }
-    }
-
-    public void setPerms(List<String> perms, Player player) {
+    public void setPerms(OfflinePlayer player, String... perms) {
         playerData.set(player.getUniqueId().toString() + ".permissions", perms);
         QuarkPerms.getInstance().savePlayerData();
-        QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player);
+        if (player.isOnline()) { QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player.getPlayer()); }
     }
 
-    public List<String> getPerms(Player player) {
-        return QuarkPerms.getInstance().getPlayerManager().getPlayerData(player).getPermissions();
+    public List<String> getPerms(UUID uuid) {
+        return playerData.getStringList(uuid.toString() + ".permissions");
     }
 
 }

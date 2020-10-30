@@ -3,6 +3,8 @@ package me.ihells.quarkperms.rank;
 import lombok.Getter;
 import me.ihells.quarkperms.QuarkPerms;
 import me.ihells.quarkperms.utils.CC;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -71,40 +73,28 @@ public class RankManager {
 
     public Rank getHighestRank() { return new ArrayList<>(ranks).get(ranks.size()-1); }
 
-    public List<Rank> getRanks(Player player) {
-        return QuarkPerms.getInstance().getPlayerManager().getPlayerData(player).getRanks();
+    public List<Rank> getRanks(UUID uuid) {
+        List<Rank> toReturn = new ArrayList<>();
+        if (playerData.getStringList(uuid.toString() + ".ranks") != null) {
+            for (String rank : playerData.getStringList(uuid.toString() + ".ranks")) {
+                if (getRank(rank) != null) toReturn.add(getRank(rank));
+            }
+        }
+        return toReturn;
     }
 
-    public void setRanks(Player player, List<Rank> ranks) {
+    public void setRanks(UUID uuid, Rank... ranks) {
+
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player == null) return;
+
         List<String> rankNames = new ArrayList<>();
         for (Rank rank : ranks) { rankNames.add(rank.getName()); }
-        playerData.set(player.getUniqueId().toString()+".ranks", rankNames);
-        QuarkPerms.getInstance().savePlayerData();
-        QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player);
-    }
 
-    public void setRank(Player player, Rank rank) {
-        playerData.set(player.getUniqueId().toString()+".ranks", Collections.singletonList(rank.getName()));
+        playerData.set(uuid.toString() + ".ranks", sortRankPriorityNames(rankNames));
         QuarkPerms.getInstance().savePlayerData();
-        QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player);
-    }
 
-    public void removeRank(Player player, Rank rank) {
-        List<String> rankNames = playerData.getStringList(player.getUniqueId().toString()+".ranks");
-        rankNames.remove(rank.getName());
-        playerData.set(player.getUniqueId().toString()+".ranks", rankNames);
-        QuarkPerms.getInstance().savePlayerData();
-        QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player);
-    }
-
-    public void addRank(Player player, Rank rank) {
-        List<String> rankNames = playerData.getStringList(player.getUniqueId().toString()+".ranks");
-        if (!rankNames.contains(rank.getName())) {
-            rankNames.add(rank.getName());
-            playerData.set(player.getUniqueId().toString() + ".ranks", rankNames);
-            QuarkPerms.getInstance().savePlayerData();
-            QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player);
-        }
+        if (player.isOnline()) QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player.getPlayer());
     }
 
     public void removeRanks() {
@@ -112,25 +102,57 @@ public class RankManager {
         ranks.clear();
     }
 
-    public void givePerms(Rank rank, List<String> perms) {
+    public void removeRanks(UUID uuid, Rank... ranks) {
+
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player == null) return;
+
+        List<String> rankNames = new ArrayList<>();
+        if (playerData.getStringList(uuid.toString() + ".ranks") != null) {
+            rankNames = playerData.getStringList(uuid.toString() + ".ranks");
+        }
+
+        for (Rank rank : ranks) {
+            rankNames.remove(rank.getName());
+        }
+
+        playerData.set(uuid.toString() + ".ranks", sortRankPriorityNames(rankNames));
+        QuarkPerms.getInstance().savePlayerData();
+
+        if (player.isOnline()) QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player.getPlayer());
+
+    }
+
+    public void addRanks(UUID uuid, Rank... ranks) {
+
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        if (player == null) return;
+
+        List<String> rankNames = new ArrayList<>();
+        if (playerData.getStringList(uuid.toString() + ".ranks") != null) {
+            rankNames = playerData.getStringList(uuid.toString() + ".ranks");
+        }
+
+        for (Rank rank : ranks) {
+            if (!rankNames.contains(rank.getName())) {
+                rankNames.add(rank.getName());
+            }
+        }
+
+        playerData.set(uuid.toString() + ".ranks", sortRankPriorityNames(rankNames));
+        QuarkPerms.getInstance().savePlayerData();
+
+        if (player.isOnline()) QuarkPerms.getInstance().getPlayerManager().reloadPlayer(player.getPlayer());
+
+    }
+
+    public void givePerms(Rank rank, String... perms) {
         List<String> current = rank.getPermissions();
         for (String perm : perms) { if (!current.contains(perm)) current.add(perm); }
-        setPerms(rank, current);
+        setPerms(rank, current.toArray(new String[0]));
     }
 
-    public void givePerms(Rank rank, String[] perms) {
-        List<String> current = rank.getPermissions();
-        for (String perm : perms) { if (!current.contains(perm)) current.add(perm); }
-        setPerms(rank, current);
-    }
-
-    public void givePerm(Rank rank, String perm) {
-        List<String> current = rank.getPermissions();
-        if (!current.contains(perm)) current.add(perm);
-        setPerms(rank, current);
-    }
-
-    public void setPerms(Rank rank, List<String> perms) {
+    public void setPerms(Rank rank, String... perms) {
         ranksFile.set(rank.getName()+".permissions", perms);
         QuarkPerms.getInstance().saveRankData();
         QuarkPerms.getInstance().reloadRankData(rank);
@@ -138,22 +160,10 @@ public class RankManager {
 
     public List<String> getPerms(Rank rank) { return rank.getPermissions(); }
 
-    public void removePerms(Rank rank, List<String> perms) {
+    public void removePerms(Rank rank, String... perms) {
         List<String> current = rank.getPermissions();
         for (String perm : perms) { current.remove(perm); }
-        setPerms(rank, current);
-    }
-
-    public void removePerms(Rank rank, String[] perms) {
-        List<String> current = rank.getPermissions();
-        for (String perm : perms) { current.remove(perm); }
-        setPerms(rank, current);
-    }
-
-    public void removePerm(Rank rank, String perm) {
-        List<String> current = rank.getPermissions();
-        current.remove(perm);
-        setPerms(rank, current);
+        setPerms(rank, current.toArray(new String[0]));
     }
 
     public void setPrefix(Rank rank, String prefix) {
@@ -171,47 +181,21 @@ public class RankManager {
         QuarkPerms.getInstance().reloadRankData(rank);
     }
 
-    public void giveInherit(Rank rank, Rank inherit) {
-        List<Rank> current = rank.getInheritance();
-        if (!current.contains(inherit)) { current.add(inherit); }
-        setInherits(rank, current);
-    }
-
-    public void giveInherits(Rank rank, List<Rank> inherits) {
+    public void giveInherits(Rank rank, Rank... inherits) {
         List<Rank> current = rank.getInheritance();
         for (Rank inherit : inherits) {
             if (!current.contains(inherit)) { current.add(inherit); }
         }
-        setInherits(rank, current);
+        setInherits(rank, current.toArray(new Rank[0]));
     }
 
-    public void giveInherits(Rank rank, Rank[] inherits) {
-        List<Rank> current = rank.getInheritance();
-        for (Rank inherit : inherits) {
-            if (!current.contains(inherit)) { current.add(inherit); }
-        }
-        setInherits(rank, current);
-    }
-
-    public void removeInherit(Rank rank, Rank inherit) {
-        List<Rank> current = rank.getInheritance();
-        current.remove(inherit);
-        setInherits(rank, current);
-    }
-
-    public void removeInherits(Rank rank, List<Rank> inherits) {
+    public void removeInherits(Rank rank, Rank... inherits) {
         List<Rank> current = rank.getInheritance();
         for (Rank inherit : inherits) { current.remove(inherit); }
-        setInherits(rank, current);
+        setInherits(rank, current.toArray(new Rank[0]));
     }
 
-    public void removeInherits(Rank rank, Rank[] inherits) {
-        List<Rank> current = rank.getInheritance();
-        for (Rank inherit : inherits) { current.remove(inherit); }
-        setInherits(rank, current);
-    }
-
-    public void setInherits(Rank rank, List<Rank> inherits) {
+    public void setInherits(Rank rank, Rank... inherits) {
         ranksFile.set(rank.getName()+".inheritance", inherits);
         QuarkPerms.getInstance().saveRankData();
         QuarkPerms.getInstance().reloadRankData(rank);
@@ -223,6 +207,25 @@ public class RankManager {
         for (Rank rank : ranks) { rank.reset(); }
         ranks.clear();
         registerRanks();
+    }
+
+    public List<Rank> sortRankPriority(List<Rank> toSort) {
+        List<Rank> sorted = new ArrayList<>();
+        for (int i = 0; i < ranks.size(); i++) {
+            for (Rank rank : toSort) { if (rank.getPriority() == i) sorted.add(rank); }
+        }
+        return sorted;
+    }
+
+    public List<String> sortRankPriorityNames(List<String> rankNames) {
+        List<Rank> ranks = new ArrayList<>();
+        List<String> sorted = new ArrayList<>();
+        for (String name : rankNames) {
+            if (getRank(name) != null && !ranks.contains(getRank(name))) ranks.add(getRank(name));
+        }
+        ranks = sortRankPriority(ranks);
+        for (Rank rank : ranks) { sorted.add(rank.getName()); }
+        return sorted;
     }
 
 }

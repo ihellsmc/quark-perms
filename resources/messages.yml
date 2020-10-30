@@ -14,20 +14,20 @@
 # If you have any difficulty setting up the config here, please join the QUARK official discord: ta5CzNc
 
 chat-format:
-  Owner: "{prefix} &c{player}&7: &f{message}"
-  Admin: "{prefix} &c{player}&7: &f{message}"
-  Mod: "{prefix} &a{player}&7: &f{message}"
+  Owner: "{prefix} &f{player}&7: &c{message}"
+  Admin: "{prefix} &f{player}&7: &c{message}"
+  Mod: "{prefix} &f{player}&7: &a{message}"
   Member: "{prefix} &7{player}: {message}"
   default: "&7{player}: {message}"
 
 no-permission: "&8[&b&lq&f&lP&8] &cError: You do not have permission to do this!"
-invalid-usage: "&8[&b&lq&f&lP&8] &cError: Invalid usage!"
+invalid-usage: "&8[&b&lq&f&lP&8] &cError: Invalid usage! Do {usage}"
 invalid-player: "&8[&b&lq&f&lP&8] &cError: Player '{target}' was not found!"
 invalid-rank: "&8[&b&lq&f&lP&8] &cError: Rank '{rank}' was not found!"
 
 on-rank-change: "&8[&b&lq&f&lP&8] &aSuccessfully set {target} to rank {rank}!"
-on-rank-add: "&8[&b&lq&f&lP&8] &Successfully gave {target} the rank {rank}!"
-on-rank-remove: "&8[&b&lq&f&lP&8] &Successfully removed the rank {rank} from {target}!"
+on-rank-add: "&8[&b&lq&f&lP&8] &aSuccessfully gave {target} the rank {rank}!"
+on-rank-remove: "&8[&b&lq&f&lP&8] &aSuccessfully removed the rank {rank} from {target}!"
 
 player-permission-add: "&8[&b&lq&f&lP&8] &aSuccessfully gave {target} permission '{permission}'!"
 player-permission-remove: "&8[&b&lq&f&lP&8] &aSuccessfully removed the permission '{permission}' from {target}!"
@@ -39,3 +39,18 @@ on-set-rank-prefix: "&8[&b&lq&f&lP&8] &aSuccessfully set the prefix for {rank} t
 
 on-inherit-add: "&8[&b&lq&f&lP&8] &aSuccessfully added inherit {inherit} to {rank}!"
 on-inherit-remove: "&8[&b&lq&f&lP&8] &aSuccessfully removed inherit {inherit} to {rank}!"
+
+rank-info:
+  - "&8[&b&lq&f&lP&8] &aShowing rank info for {rank}:"
+  - "&8[&b&lq&f&lP&8] &fName: &b{rank}"
+  - "&8[&b&lq&f&lP&8] &fChat Prefix: {prefix}"
+  - "&8[&b&lq&f&lP&8] &fPriority: &b{priority}"
+  - "&8[&b&lq&f&lP&8] &fInheritance: &b{inherits}"
+  - "&8[&b&lq&f&lP&8] &fPermissions: &b{permissions}"
+
+player-info:
+  - "&8[&b&lq&f&lP&8] &aShowing player info for {target}:"
+  - "&8[&b&lq&f&lP&8] &fName: &b{target}"
+  - "&8[&b&lq&f&lP&8] &fRank: &b{rank}"
+  - "&8[&b&lq&f&lP&8] &fRanks: &b{ranks}"
+  - "&8[&b&lq&f&lP&8] &fPermissions: &b{permissions}"
