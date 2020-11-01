@@ -1,5 +1,0 @@
-main: me.ihells.quarkperms.QuarkPerms
-name: "quarkPerms"
-version: "DEV-1.0"
-author: "@ihellsmc"
-description: "A complete permissions plugin, equipped with a handy API"
